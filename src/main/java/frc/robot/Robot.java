@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
   private TalonFX rightm1;
   private TalonFX rightm2;
   private XboxController joy1;
-private limelight lime;
+
 
     NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     NetworkTableEntry tx = table.getEntry("tx");
@@ -56,10 +56,10 @@ private limelight lime;
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-    leftm1 = new TalonFX(0);
-    leftm2 = new TalonFX(1);
-    rightm1 = new TalonFX(2);
-    rightm2 = new TalonFX(3);
+    leftm1 = new TalonFX(1);
+    leftm2 = new TalonFX(2);
+    rightm1 = new TalonFX(3);
+    rightm2 = new TalonFX(4);
     joy1 = new XboxController(0);
 
   
@@ -100,15 +100,79 @@ private limelight lime;
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
+     double x = tx.getDouble(0.0);
+        double y = ty.getDouble(0.0);
+        double a = ta.getDouble(0.0);
+        double v = tv.getDouble(0.0);
+        SmartDashboard.putNumber("x", x);
+        SmartDashboard.putNumber("y", y);
+        SmartDashboard.putNumber("a", a);
+        SmartDashboard.putNumber("v", v);
+        double limelightangle = 0;
+        double llheight = 40;
+        double targethight = 30;
+        double angleToGoalDegrees = limelightangle + y; 
+         double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+         double distanceFromLimelightToGoalInches = (targethight - llheight) / Math.tan(angleToGoalRadians);
+         SmartDashboard.putNumber("distance from target", -distanceFromLimelightToGoalInches);
+          SmartDashboard.putNumber("y", y);
+         if (-distanceFromLimelightToGoalInches > 50 && -distanceFromLimelightToGoalInches< 100){//20 is just a place holder
+          leftm1.set(ControlMode.PercentOutput, -0.25);
+          leftm2.set(ControlMode.PercentOutput, -0.25);
+          rightm1.set(ControlMode.PercentOutput,-0.25);
+          rightm2.set(ControlMode.PercentOutput, 0.25);
+
+         }
+         else if(distanceFromLimelightToGoalInches< 50){//20 is just a place holder
+           leftm1.set(ControlMode.PercentOutput, 0);
+          leftm2.set(ControlMode.PercentOutput, 0);
+          rightm1.set(ControlMode.PercentOutput, 0);
+          rightm2.set(ControlMode.PercentOutput, 0);
+
+         }
+      
+        // if(x > 1.0){
+        //   leftm1.set(ControlMode.PercentOutput, 0.25);
+        //   leftm2.set(ControlMode.PercentOutput, 0.25);
+        //   rightm1.set(ControlMode.PercentOutput, 0.25);
+        //   rightm2.set(ControlMode.PercentOutput, -0.25);
+
+          
+       
+
+
+
+
+
+        // }
+        // else if(x < -1.0){
+        //   rightm1.set(ControlMode.PercentOutput,-0.25);
+        //   rightm2.set(ControlMode.PercentOutput, -0.25);
+        //   leftm1.set(ControlMode.PercentOutput, -0.25);
+        //   leftm2.set(ControlMode.PercentOutput, 0.25);
+
+        // }
+        // else if(x > -1.0 && x < 1.0){
+        // leftm1.set(ControlMode.PercentOutput,0);
+        // leftm2.set(ControlMode.PercentOutput,0);
+        // rightm1.set(ControlMode.PercentOutput,0);
+        // rightm2.set(ControlMode.PercentOutput,0);
+        // }
+        
+
+
+        
+
+      
+    // switch (m_autoSelected) {
+    //   case kCustomAuto:
+    //     // Put custom auto code here
+    //     break;
+    //   case kDefaultAuto:
+    //   default:
+    //     // Put default auto code here
+    //     break;
+    // }
   }
 
   /** This function is called once when teleop is enabled. */
@@ -138,47 +202,29 @@ private limelight lime;
         double rightfront = speed-turn-strafe;
         double leftrear = speed+turn-strafe;
         double rightrear = speed-turn+strafe;
-        leftm1.set(ControlMode.PercentOutput,leftfront*0.7);
-        leftm2.set(ControlMode.PercentOutput,rightfront*0.7);
-        rightm1.set(ControlMode.PercentOutput,leftrear*0.7);
-        rightm2.set(ControlMode.PercentOutput,rightrear*0.7);
+        leftm1.set(ControlMode.PercentOutput,leftfront*-0.35);
+        leftm2.set(ControlMode.PercentOutput,rightfront*-0.35);
+        rightm1.set(ControlMode.PercentOutput,leftrear*-0.35);
+        rightm2.set(ControlMode.PercentOutput,rightrear*0.35);
         double x = tx.getDouble(0.0);
         double y = ty.getDouble(0.0);
         double a = ta.getDouble(0.0);
         double v = tv.getDouble(0.0);
+     
+        SmartDashboard.putNumber("x", x);
+        SmartDashboard.putNumber("y", y);
+        SmartDashboard.putNumber("a", a);
+        SmartDashboard.putNumber("v", v);
+        double limelightangle = 0;
+        double llheight = 40;
+        double targethight = 40;
+        double angleToGoalDegrees = limelightangle + y;
+         double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+         double distanceFromLimelightToGoalInches = (targethight - llheight) / Math.tan(angleToGoalRadians);
+         SmartDashboard.putNumber("distance from target", distanceFromLimelightToGoalInches);
+
         
-      if(v >= 1){
-        if(x > 1.0){
-          leftm1.set(ControlMode.PercentOutput, 0.02*x);
-          leftm1.set(ControlMode.PercentOutput, 0.02*x);
-       
-
-
-
-
-
-        }
-        else if(x < -1.0){
-          rightm1.set(ControlMode.PercentOutput,0.02*x);
-          rightm2.set(ControlMode.PercentOutput, 0.02*x);
-
-        }
-        else if(x > -1.0 && x < 1.0){
-        leftm1.set(ControlMode.PercentOutput,0);
-        leftm2.set(ControlMode.PercentOutput,0);
-        rightm1.set(ControlMode.PercentOutput,0);
-        rightm2.set(ControlMode.PercentOutput,0);
-        }
-        else if(v ==0){
-          leftm1.set(ControlMode.PercentOutput,0);
-        leftm2.set(ControlMode.PercentOutput,0);
-        rightm1.set(ControlMode.PercentOutput,0);
-        rightm2.set(ControlMode.PercentOutput,0);
-
-
-        }
-
-      }
+    
     
   }
 
